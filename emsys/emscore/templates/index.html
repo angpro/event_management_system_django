@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Find your event</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="container">
+        <h4>Find your event!</h4>
+
+        <ul class="nav nav-pills">
+            <li class="nav-item">
+                {% url 'index' as index %}
+                <a class="nav-link {% if index == request.path %}active{% endif %}" aria-current="page" href="{{ index }}">Home</a>
+            </li>
+            {% if request.user.is_authenticated %}
+            <li class="nav-item">
+                {% url 'manage_events' as manage_events %}
+                <a class="nav-link {% if manage_events == request.path %}active{% endif %}" aria-current="page" href="{{ manage_events }}">My Events</a>
+              </li>
+            {% endif %}
+            <!-- <li class="nav-item">
+                {% url 'my_profile' as my_profile %}
+                <a class="nav-link {% if my_profile == request.path %}active{% endif %}" aria-current="page" href="{{ my_profile }}">My Profile</a>
+            </li> -->
+                    {% if request.user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">{{request.user}}</a>
+                        <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'my_profile' request.user.id %}">Profile details</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="{% url 'logout_page' %}">Log out</a></li>
+                    {% else %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">My Profile</a>
+                        <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'register_page' %}">Register</a></li>
+                        <li><a class="dropdown-item" href="{% url 'login_page' %}">Log in</a></li>
+                    {% endif %}
+                </ul>
+              </li>
+        </ul>        
+        {% block content %}
+            
+            <h5><span class="badge bg-secondary">Search by keyword or by a date in the format: yyyy-mm-dd</span></h5>
+            <nav class="navbar bg-body-tertiary">
+                <div class="container-fluid">
+                <form class="d-flex" role="search" action="{% url 'index' %}">
+                    <input class="form-control me-2" type="search" placeholder="Search" name="search" aria-label="Search">
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </form>
+                </div>
+            </nav>
+
+            <ul class="list-group">
+                {% for event in list_events %}
+                <li class="list-group-item">
+                    <h3>{{ event.title }}</h3>
+                    <br>
+                    Publisher: {{ event.author }}
+                    </br>
+                    <br>
+                        {{ event.time }}  {{ event.address }}
+                    </br>
+                    <br>
+                        {{ event.description }}
+                    </br>
+                    <br>
+                        <a type="submit" class="btn btn-outline-primary" href= "{% url 'book_event' event.id %}">Book</a>
+                        <a type="submit" class="btn btn-outline-primary" href= "{% url 'subscribe_to_org' event.id %}">Subscribe to @{{ event.author }}</a>
+                        
+                        <!-- <form id="subscribe_{{event.id}}" action="{% url 'subscribe_to_org' event.id %}" method="post">{% csrf_token %}</form>
+                        <button form="subscribe_{{event.id}}" type="submit" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#subscribe">
+                            : Subscribe to @{{ event.author }}
+                        </button> -->
+
+                        <!-- <form id="subscribe_{{event.id}}" method="post">{% csrf_token %}</form>
+                        <button form="subscribe_{{event.id}}" type="submit" class="btn btn-primary" formaction="{% url 'manage_events' %}?user={{user.id}}&event={{event.id}}">{{ user.username }}</button>
+                            
+
+                        <form id="subscribe_{{event.id}}" method="post">{% csrf_token %}</form>
+                        <button form="subscribe_{{event.id}}" type="submit" class="btn btn-primary" formaction="{% url 'index' %}?subscribe_to={{event.id}}"> :Subscribe to @{{ event.author }} </button> -->
+                    </br>
+                </li>
+                {% endfor %}
+            </ul>
+
+
+            <!-- <div class="modal" id="subscribe" tabindex="-1">
+                <div class="modal-dialog">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title">You have successfully subscribed!</h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                      <p>Check your email for new events</p>
+                    </div>
+                  </div>
+                </div>
+              </div> -->
+
+        {% endblock %}
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+  </body>
+</html>

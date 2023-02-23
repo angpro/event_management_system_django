@@ -1,0 +1,43 @@
+{% extends 'index.html' %}
+{% block content %}
+    <p> Edit Event! </p>
+
+    <p> Update Form! </p>
+
+    <form id="update_event" method="post">
+        {% csrf_token %}
+        {{form}}
+    </form>
+    <button form="update_event" type="submit" class="btn btn-primary">Save</button>
+
+
+    <!-- {% if update %}
+
+        <p> Update Form! </p>
+
+        <form id="update_event" method="post">
+            {% csrf_token %}
+            {{form}}
+        </form>
+        <button form="update_event" type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-primary"><a style="color: white; text-decoration:none" href="{{ manage_events }}">Close</a></button> 
+
+    {% else %}
+
+    <li class="list-group-item">
+        <h3>{{ get_event.title }}</h3>
+        <br>
+        Publisher: ...
+        </br>
+        <br>
+            {{ get_event.time }}  {{ get_event.address }}
+        </br>
+        <br>
+            {{ get_event.description }}
+        </br>
+    </li>
+
+    {% endif %}
+ -->
+
+{% endblock %}

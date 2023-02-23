@@ -1,0 +1,142 @@
+{% extends 'index.html' %}
+{% block content %}
+
+    {% if is_attendant %}
+
+    <h5><span class="badge bg-secondary">Track your events</span></h5>
+
+    <h3> Your events: </h3>
+    <ul class="list-group">
+        {% for event in attend_events %}
+        <li class="list-group-item">
+            <h3>
+                <span class="badge text-bg-success">{{ event.title }}</span>
+            </h3>
+            <br>
+            Publisher: {{ event.author }}
+            </br>
+            <br>
+                {{ event.time }}  {{ event.address }}
+            </br>
+            <br>
+                {{ event.description }}
+            </br>
+        </li>
+        {% endfor %}
+    </ul>
+
+
+    <h3> Waiting for approval: </h3>
+    <ul class="list-group">
+        {% for event in booked_events %}
+        <li class="list-group-item">
+            <h3>
+                <span class="badge text-bg-warning">{{ event.title }}</span>
+            </h3>
+            <br>
+            Publisher: {{ event.author }}
+            </br>
+            <br>
+                {{ event.time }}  {{ event.address }}
+            </br>
+            <br>
+                {{ event.description }}
+            </br>
+        </li>
+        {% endfor %}
+    </ul>
+
+    {% else %}  
+        <h5><span class="badge bg-secondary">Manage your published events</span></h5>
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        Add Event
+        </button>
+
+        {% if messages %}
+        <div class="alert alert-success"> 
+            {% for msg in messages %}
+                {{msg}}
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <table class="table">
+            <thead>
+                <tr>
+                <th scope="col">Time</th>
+                <th scope="col">Address</th>
+                <th scope="col">Title</th>
+                <th scope="col">Edit</th>
+                <th scope="col">Delete</th>
+                </tr>
+            </thead>
+                {% for event in list_events %}
+                    <tbody class="table-group-divider">
+
+                        <tr>
+                            <td>{{ event.time }}</td>
+                            <td>{{ event.address }}</td>
+                            <td>{{ event.title }}</td>
+                            <!-- <td><a href="{% url 'edit_event' event.id %}">Edit</a></td> -->
+                            <td>
+                                <button type="button" class="btn btn-primary"><a style="color: white; text-decoration:none" href="{% url 'edit_event' event.id %}">Edit</a></button> 
+                            </td>
+                            <td>
+                                <form id="del_event{{event.id}}" action="{% url 'delete_event' event.id %}" method="post">{% csrf_token %}</form>
+                                <button form="del_event{{event.id}}" type="submit" class="btn btn-primary">Delete</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="5">
+                                Booked by:
+                                {% for event_id, users in booked_by.items %}
+                                    {% if event_id == event.id %}
+                                        {% for user in users %}
+                                            <form id="add_attendant_{{user.id}}" method="post">{% csrf_token %}</form>
+                                            <button form="add_attendant_{{user.id}}" type="submit" class="btn btn-info" formaction="{% url 'manage_events' %}?user={{user.id}}&event={{event.id}}">{{ user.username }}</button>
+                                        {% endfor %}
+                                    {% endif %}
+                                {% endfor %}
+                            </td>
+                        </tr>
+                        <td colspan="5">
+                            Attendants:
+                            {% for event_id, users in attendants.items %}
+                                {% if event_id == event.id %}
+                                    {% for user in users %}
+                                      <h4><span class="badge text-bg-light">{{ user.username }}</span></h4>
+                                    {% endfor %}
+                                {% endif %}
+                            {% endfor %}
+                        </td>
+                    </tbody>
+                {% endfor %}
+           
+            </table>
+
+        <!-- Modal -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="add_event" method="post">
+                    {% csrf_token %}
+                    {{form}}
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button form="add_event" type="submit" class="btn btn-primary">Save</button>
+            </div>
+            </div>
+        </div>
+        </div>
+
+    {% endif %}
+
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'index.html' %}
+{% block content %}
+<p> Register </p>
+
+<div class="col-4">
+    <form id="user_register" method="post">
+        {% csrf_token %}
+        {{form}}
+        <button form="user_register" type="submit" class="btn btn-primary" formaction="{% url 'register_page' %}?type=attendant">Register</button>
+        <button form="user_register" type="submit" class="btn btn-primary" formaction="{% url 'register_page' %}?type=orginizer">Register as Events Orginizer</button>
+    </form>
+</div>
+
+    <!-- <form id="update_event" method="post">
+        {% csrf_token %}
+        {{form}}
+    </form>
+    <button form="update_event" type="submit" class="btn btn-primary">Save</button>
+
+ -->
+    <!-- {% if update %}
+
+        <p> Update Form! </p>
+
+        <form id="update_event" method="post">
+            {% csrf_token %}
+            {{form}}
+        </form>
+        <button form="update_event" type="submit" class="btn btn-primary">Save</button>
+        <button type="button" class="btn btn-primary"><a style="color: white; text-decoration:none" href="{{ manage_events }}">Close</a></button> 
+
+    {% else %}
+
+    <li class="list-group-item">
+        <h3>{{ get_event.title }}</h3>
+        <br>
+        Publisher: ...
+        </br>
+        <br>
+            {{ get_event.time }}  {{ get_event.address }}
+        </br>
+        <br>
+            {{ get_event.description }}
+        </br>
+    </li>
+
+    {% endif %}
+ -->
+
+{% endblock %}
